@@ -38,14 +38,19 @@ public class ViewServer extends javax.swing.JFrame {
         logLabel = new javax.swing.JLabel();
 
         jMenuItem1.setText("Delete");
-        jMenuItem1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenuItem1MouseClicked(evt);
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
             }
         });
         PopupMenu.add(jMenuItem1);
 
         jMenuItem2.setText("Move up");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
         PopupMenu.add(jMenuItem2);
 
         jMenuItem3.setText("Move down");
@@ -68,6 +73,7 @@ public class ViewServer extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        roomList.setComponentPopupMenu(PopupMenu);
         roomList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 roomListMouseClicked(evt);
@@ -94,8 +100,8 @@ public class ViewServer extends javax.swing.JFrame {
             }
         });
 
-        infoArea.setColumns(20);
         infoArea.setEditable(false);
+        infoArea.setColumns(20);
         infoArea.setRows(5);
         infoArea.setFocusable(false);
         jScrollPane1.setViewportView(infoArea);
@@ -228,11 +234,13 @@ public class ViewServer extends javax.swing.JFrame {
 //        }
     }//GEN-LAST:event_roomListMouseClicked
 
-    private void jMenuItem1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MouseClicked
-        if (SwingUtilities.isLeftMouseButton(evt)) {
-            
-        }
-    }//GEN-LAST:event_jMenuItem1MouseClicked
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        System.out.println("b");
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        System.out.println(roomList.getSelectedIndex());
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     public static void main(String args[]) {
 
