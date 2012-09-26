@@ -1,6 +1,5 @@
 package hu.unideb.inf.forms;
 
-
 import hu.unideb.inf.classes.Room;
 import hu.unideb.inf.classes.Server;
 import java.util.Iterator;
@@ -16,12 +15,17 @@ public class ViewServer extends javax.swing.JFrame {
         initComponents();
         server = new Server(this);
         portTextField.requestFocusInWindow();
+        roomList.setComponentPopupMenu(PopupMenu);
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        PopupMenu = new javax.swing.JPopupMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         portTextField = new javax.swing.JTextField();
         startButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -32,6 +36,20 @@ public class ViewServer extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         infoArea = new javax.swing.JTextArea();
         logLabel = new javax.swing.JLabel();
+
+        jMenuItem1.setText("Delete");
+        jMenuItem1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenuItem1MouseClicked(evt);
+            }
+        });
+        PopupMenu.add(jMenuItem1);
+
+        jMenuItem2.setText("Move up");
+        PopupMenu.add(jMenuItem2);
+
+        jMenuItem3.setText("Move down");
+        PopupMenu.add(jMenuItem3);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(550, 350));
@@ -161,7 +179,7 @@ public class ViewServer extends javax.swing.JFrame {
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        String room = (String) roomList.getSelectedValue();        
+        String room = (String) roomList.getSelectedValue();
         Room r1 = null;
         for (Iterator<Room> it = server.getRooms().iterator(); it.hasNext();) {
             Room r = it.next();
@@ -170,36 +188,51 @@ public class ViewServer extends javax.swing.JFrame {
                     infoArea.append("Default Room cannot be deleted!\n");
                     System.out.println("Default Room cannot be deleted!");
                     continue;
-                }                             
+                }
                 r1 = r;
             }
         }
-        if (r1 != null)
+        if (r1 != null) {
             server.deleteRoom(r1);
+        }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     /**
      * Occours when clicked on the roomList button.
-     * @param evt 
+     *
+     * @param evt
      */
     private void roomListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_roomListMouseClicked
         JList list = (JList) evt.getSource();
-        if (evt.getClickCount() == 2) {          
+        if (evt.getClickCount() == 2) {
             int index = list.locationToIndex(evt.getPoint());
-            ListModel lm = list.getModel();
-            Object item = lm.getElementAt(index);
-            list.ensureIndexIsVisible(index);
-            for (Iterator<Room> it = server.getRooms().iterator(); it.hasNext();) {
-                Room r = it.next();
-                if (r.getRoomName().equals(item)) {
-                    r.roomLoggerVisible(true);
+            if (index >= 0) {
+                ListModel lm = list.getModel();
+                Object item = lm.getElementAt(index);
+                list.ensureIndexIsVisible(index);
+                for (Iterator<Room> it = server.getRooms().iterator(); it.hasNext();) {
+                    Room r = it.next();
+                    if (r.getRoomName().equals(item)) {
+                        r.roomLoggerVisible(true);
+                    }
                 }
             }
         }
-        if (SwingUtilities.isRightMouseButton(evt)) {
+//        if (SwingUtilities.isRightMouseButton(evt)) {
+//            int index = list.locationToIndex(evt.getPoint());
+//            System.out.println(index);
+//            list.setSelectedIndex(index);
+//            roomList.setSelectedIndex(index);
+//            roomList.getComponentPopupMenu().show(evt.getComponent(), evt.getX(), evt.getY());
+//            
+//        }
+    }//GEN-LAST:event_roomListMouseClicked
+
+    private void jMenuItem1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MouseClicked
+        if (SwingUtilities.isLeftMouseButton(evt)) {
             
         }
-    }//GEN-LAST:event_roomListMouseClicked
+    }//GEN-LAST:event_jMenuItem1MouseClicked
 
     public static void main(String args[]) {
 
@@ -236,9 +269,13 @@ public class ViewServer extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPopupMenu PopupMenu;
     private javax.swing.JButton addButton;
     private javax.swing.JButton deleteButton;
     public javax.swing.JTextArea infoArea;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel logLabel;
