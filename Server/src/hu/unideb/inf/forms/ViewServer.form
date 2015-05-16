@@ -8,32 +8,44 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+        <MenuItem class="javax.swing.JMenuItem" name="deleteMenuItem">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="&quot;Delete&quot;" type="code"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteMenuItemActionPerformed"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="deleteMenuItem.setEnabled(false);"/>
+          </AuxValues>
         </MenuItem>
-        <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
+        <MenuItem class="javax.swing.JMenuItem" name="moveUpMenuItem">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="&quot;Move up&quot;" type="code"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem2ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="moveUpMenuItemActionPerformed"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="moveUpMenuItem.setEnabled(false);"/>
+          </AuxValues>
         </MenuItem>
-        <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
+        <MenuItem class="javax.swing.JMenuItem" name="moveDownMenuItem">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="&quot;Move down&quot;" type="code"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="moveDownMenuItemActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="moveDownMenuItem.setEnabled(false);"/>
+          </AuxValues>
         </MenuItem>
       </SubComponents>
     </Container>
@@ -46,6 +58,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -149,11 +162,9 @@
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="new javax.swing.AbstractListModel() {&#xa;    String[] strings = {};&#xa;    public int getSize() { return strings.length; }&#xa;    public Object getElementAt(int i) { return strings[i]; }&#xa;}" type="code"/>
             </Property>
-            <Property name="componentPopupMenu" type="javax.swing.JPopupMenu" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="PopupMenu"/>
-            </Property>
           </Properties>
           <Events>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="roomListMouseReleased"/>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="roomListMouseClicked"/>
           </Events>
           <AuxValues>

@@ -1,7 +1,7 @@
 package hu.unideb.inf.classes;
 
 import hu.unideb.inf.forms.MessageView;
-import hu.unideb.inf.forms.ViewClient;
+import hu.unideb.inf.forms.ClientView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,24 +11,24 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class Client {
+public class Connection {
 
-    private Socket sock;
+    private Socket socket;
     String name;
     PrintWriter out;
     BufferedReader in;
-    ViewClient viewClient;
+    ClientView viewClient;
     MessageView messageView;
 
-    public Client(String ip, int port, String name, ViewClient viewClient,
+    public Connection(String ip, int port, String name, ClientView viewClient,
             MessageView messageView) {
         this.viewClient = viewClient;
         this.messageView = messageView;
         this.name = name;
         try {
-            sock = new Socket(ip, port);
-            out = new PrintWriter(sock.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            socket = new Socket(ip, port);
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             viewClient.setIsConnected(true);
         } catch (IOException ex) {
             messageView.setMessageView("Unknown Host: " + ip + ":" + port,
@@ -74,7 +74,7 @@ public class Client {
         new Thread() {
 
             String buffer;
-            String lastUser = new String();
+            String lastUser = "";
 
             @Override
             public void run() {
@@ -104,7 +104,7 @@ public class Client {
                         viewClient.stateTextField.setText("Offline");
                         viewClient.stateTextField.setBackground(new java.awt.Color(255, 102, 102));
 
-                        if ("socket closed".equals(ex.getMessage())) {
+                        if ("socketet closed".equals(ex.getMessage())) {
                             messageView.setMessageView("Disconnected!",
                                     "../images/Information-icon.png", "Information");
                             System.out.println(ex.getMessage());
@@ -112,8 +112,8 @@ public class Client {
                             messageView.setMessageView("Connection lost!",
                                     "../images/Information-icon.png", "Information");
                             System.out.println(ex.getMessage());
-                            viewClient.connection.setEnabled(true);
-                            viewClient.disconnect.setEnabled(false);
+                            viewClient.connectionMenuItem.setEnabled(true);
+                            viewClient.disconnectMenuItem.setEnabled(false);
                         }
 
                         break;
@@ -128,7 +128,7 @@ public class Client {
         try {
             out.close();
             in.close();
-            sock.close();
+            socket.close();
             viewClient.setIsConnected(false);
         } catch (IOException ex) {
             System.out.println("Disconnection failed!");
@@ -136,6 +136,6 @@ public class Client {
     }
 
     public Socket getSock() {
-        return sock;
+        return socket;
     }
 }

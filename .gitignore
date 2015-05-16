@@ -4,3 +4,13 @@
 *.jar
 *.war
 *.ear
+/Server/nbproject/private/
+/Client/nbproject/private/
+/Client/build/
+/Server/build/
+/Security/nbproject/private/
+/Security/build/
+/PublicKeyInfrastructure/nbproject/private/
+/PublicKeyInfrastructure/build/
+/chat-common-api/nbproject/private/
+/chat-common-api/build/

@@ -1,5 +1,12 @@
 package hu.unideb.inf.forms;
 
+import com.darkfalcon.java.message.Message;
+import com.darkfalcon.java.message.Opcode;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import hu.unideb.inf.classes.PKIConnection;
+
 
 public class SettingsDialog extends javax.swing.JDialog {
 
@@ -20,6 +27,8 @@ public class SettingsDialog extends javax.swing.JDialog {
         jTextField1 = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Settings");
@@ -78,6 +87,20 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Appearance", jPanel2);
 
+        jButton4.setText("jButton4");
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
+
+        jButton5.setText("jButton5");
+        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton5MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -87,6 +110,10 @@ public class SettingsDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
                         .addGap(5, 5, 5)
                         .addComponent(jButton2))
@@ -101,17 +128,35 @@ public class SettingsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(jButton4)
+                    .addComponent(jButton5))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        connection = new PKIConnection();
+    }//GEN-LAST:event_jButton4MouseClicked
+
+    private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
+        Gson gson = new Gson();
+        Message<String> message = new Message<String>();
+        message.setOpcode(Opcode.VALIDATE_SYN);
+        message.setContent("server2");
+        String messageText = gson.toJson(message, new TypeToken<Message<String>>() {}.getType());
+        connection.send(messageText);
+    }//GEN-LAST:event_jButton5MouseClicked
+
+    PKIConnection connection;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

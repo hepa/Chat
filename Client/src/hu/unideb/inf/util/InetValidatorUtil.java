@@ -1,9 +1,9 @@
 package hu.unideb.inf.util;
 
 
-public class Validate {
+public class InetValidatorUtil {
 
-    public boolean checkIP(String ip) {
+    public static boolean checkIP(String ip) {
 
         if (ip.isEmpty()) {
             return false;
@@ -30,7 +30,7 @@ public class Validate {
         return true;
     }
 
-    public boolean checkPort(String port) {
+    public static boolean checkPort(String port) {
 
         if (port.isEmpty()) {
             return false;
@@ -49,7 +49,7 @@ public class Validate {
         return true;
     }
 
-    public int checkName(String name) {
+    public static int checkName(String name) {
         if (name.isEmpty()) {
             return 1;
         } else if (name.length() < 3) {

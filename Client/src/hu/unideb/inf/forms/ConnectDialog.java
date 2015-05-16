@@ -1,6 +1,6 @@
 package hu.unideb.inf.forms;
 
-import hu.unideb.inf.util.Validate;
+import hu.unideb.inf.util.InetValidatorUtil;
 
 public class ConnectDialog extends javax.swing.JDialog {
 
@@ -40,6 +40,12 @@ public class ConnectDialog extends javax.swing.JDialog {
         portLabel.setText("Port Number:");
 
         nameLabel.setText("Name:");
+
+        ipState.setForeground(new java.awt.Color(255, 0, 0));
+
+        portState.setForeground(new java.awt.Color(255, 0, 0));
+
+        nameState.setForeground(new java.awt.Color(255, 0, 0));
 
         connectButton.setText("Connect");
         connectButton.addActionListener(new java.awt.event.ActionListener() {
@@ -132,21 +138,21 @@ public class ConnectDialog extends javax.swing.JDialog {
         ip = ipField.getText();
         name = nameField.getText();
         String inPort = portField.getText();
-        Validate v = new Validate();
-        if (v.checkIP(ip) && v.checkPort(inPort) && v.checkName(name) == 0) {
+        
+        if (InetValidatorUtil.checkIP(ip) && InetValidatorUtil.checkPort(inPort) && InetValidatorUtil.checkName(name) == 0) {
             port = Integer.parseInt(inPort);
             this.dispose();
         }
-        if (!v.checkPort(inPort)) {
+        if (!InetValidatorUtil.checkPort(inPort)) {
             portState.setText("Invalid!");
         }
-        if (!v.checkIP(ip)) {
+        if (!InetValidatorUtil.checkIP(ip)) {
             ipState.setText("Invalid!");
         }
-        if (v.checkName(name) == 1) {
+        if (InetValidatorUtil.checkName(name) == 1) {
             nameState.setText("Choose a name!");
         }
-         if (v.checkName(name) == 2) {
+         if (InetValidatorUtil.checkName(name) == 2) {
             nameState.setText("Too short!");
         }
         

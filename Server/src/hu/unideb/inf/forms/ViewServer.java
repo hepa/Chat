@@ -5,7 +5,6 @@ import hu.unideb.inf.classes.Server;
 import java.util.Iterator;
 import javax.swing.JList;
 import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
 
 public class ViewServer extends javax.swing.JFrame {
 
@@ -15,7 +14,6 @@ public class ViewServer extends javax.swing.JFrame {
         initComponents();
         server = new Server(this);
         portTextField.requestFocusInWindow();
-        roomList.setComponentPopupMenu(PopupMenu);
     }
 
     @SuppressWarnings("unchecked")
@@ -23,9 +21,9 @@ public class ViewServer extends javax.swing.JFrame {
     private void initComponents() {
 
         PopupMenu = new javax.swing.JPopupMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        deleteMenuItem = new javax.swing.JMenuItem();
+        moveUpMenuItem = new javax.swing.JMenuItem();
+        moveDownMenuItem = new javax.swing.JMenuItem();
         portTextField = new javax.swing.JTextField();
         startButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -37,24 +35,32 @@ public class ViewServer extends javax.swing.JFrame {
         infoArea = new javax.swing.JTextArea();
         logLabel = new javax.swing.JLabel();
 
-        jMenuItem1.setText("Delete");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        deleteMenuItem.setText("Delete");
+        deleteMenuItem.setEnabled(false);
+        deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                deleteMenuItemActionPerformed(evt);
             }
         });
-        PopupMenu.add(jMenuItem1);
+        PopupMenu.add(deleteMenuItem);
 
-        jMenuItem2.setText("Move up");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        moveUpMenuItem.setText("Move up");
+        moveUpMenuItem.setEnabled(false);
+        moveUpMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                moveUpMenuItemActionPerformed(evt);
             }
         });
-        PopupMenu.add(jMenuItem2);
+        PopupMenu.add(moveUpMenuItem);
 
-        jMenuItem3.setText("Move down");
-        PopupMenu.add(jMenuItem3);
+        moveDownMenuItem.setText("Move down");
+        moveDownMenuItem.setEnabled(false);
+        moveDownMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moveDownMenuItemActionPerformed(evt);
+            }
+        });
+        PopupMenu.add(moveDownMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(550, 350));
@@ -73,8 +79,10 @@ public class ViewServer extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        roomList.setComponentPopupMenu(PopupMenu);
         roomList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                roomListMouseReleased(evt);
+            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 roomListMouseClicked(evt);
             }
@@ -172,6 +180,9 @@ public class ViewServer extends javax.swing.JFrame {
             server.listenSocket(port);
             addButton.setEnabled(true);
             deleteButton.setEnabled(true);
+            deleteMenuItem.setEnabled(true);
+            moveUpMenuItem.setEnabled(true);
+            moveDownMenuItem.setEnabled(true);
         }
     }//GEN-LAST:event_startButtonActionPerformed
 
@@ -224,69 +235,60 @@ public class ViewServer extends javax.swing.JFrame {
                 }
             }
         }
-//        if (SwingUtilities.isRightMouseButton(evt)) {
-//            int index = list.locationToIndex(evt.getPoint());
-//            System.out.println(index);
-//            list.setSelectedIndex(index);
-//            roomList.setSelectedIndex(index);
-//            roomList.getComponentPopupMenu().show(evt.getComponent(), evt.getX(), evt.getY());
-//            
-//        }
     }//GEN-LAST:event_roomListMouseClicked
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        System.out.println("b");
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    private void roomListMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_roomListMouseReleased
+        if (evt.isPopupTrigger()) {
+            PopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+            int index = roomList.locationToIndex(evt.getPoint());
+            roomList.setSelectedIndex(index);
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        System.out.println(roomList.getSelectedIndex());
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+        }
 
-    public static void main(String args[]) {
+    }//GEN-LAST:event_roomListMouseReleased
 
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the
-         * default look and feel. For details see
-         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+    private void deleteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteMenuItemActionPerformed
+        int index = roomList.getSelectedIndex();
+        if (index >= 0) {
+            ListModel lm = roomList.getModel();
+            Object item = lm.getElementAt(index);
+            roomList.ensureIndexIsVisible(index);
+            Room r1 = null;
+            for (Iterator<Room> it = server.getRooms().iterator(); it.hasNext();) {
+                Room r = it.next();
+                if (r.getRoomName().equals(item)) {
+                    if (r.getRoomID() == 0) {
+                        infoArea.append("Default Room cannot be deleted!\n");
+                        System.out.println("Default Room cannot be deleted!");
+                        continue;
+                    }
+                    r1 = r;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ViewServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ViewServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ViewServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ViewServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            server.deleteRoom(r1);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_deleteMenuItemActionPerformed
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
+    private void moveUpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveUpMenuItemActionPerformed
+        System.out.println("MoveUP: " + roomList.getSelectedIndex());
+    }//GEN-LAST:event_moveUpMenuItemActionPerformed
 
-            @Override
-            public void run() {
-                new ViewServer().setVisible(true);
-            }
-        });
-    }
+    private void moveDownMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moveDownMenuItemActionPerformed
+        System.out.println("MoveDown: " + roomList.getSelectedIndex());
+    }//GEN-LAST:event_moveDownMenuItemActionPerformed
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu PopupMenu;
     private javax.swing.JButton addButton;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JMenuItem deleteMenuItem;
     public javax.swing.JTextArea infoArea;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel logLabel;
+    private javax.swing.JMenuItem moveDownMenuItem;
+    private javax.swing.JMenuItem moveUpMenuItem;
     private javax.swing.JTextField portTextField;
     private javax.swing.JLabel roomLabel;
     public javax.swing.JList roomList;

@@ -1,10 +1,10 @@
 package hu.unideb.inf.forms;
 
-import hu.unideb.inf.classes.Client;
+import hu.unideb.inf.classes.Connection;
 
-public class ViewClient extends javax.swing.JFrame {
+public class ClientView extends javax.swing.JFrame {
 
-    public ViewClient() {
+    public ClientView() {
         initComponents();
         messageView = new MessageView(this, true);
     }
@@ -25,20 +25,19 @@ public class ViewClient extends javax.swing.JFrame {
         changeRoomButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        connection = new javax.swing.JMenuItem();
-        disconnect = new javax.swing.JMenuItem();
-        quit = new javax.swing.JMenuItem();
+        connectionMenuItem = new javax.swing.JMenuItem();
+        disconnectMenuItem = new javax.swing.JMenuItem();
+        quitMenuItem = new javax.swing.JMenuItem();
         settingsMenu = new javax.swing.JMenu();
         option = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Chat");
         setBounds(new java.awt.Rectangle(200, 120, 0, 0));
-        setPreferredSize(new java.awt.Dimension(700, 500));
         setResizable(false);
 
-        jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setFocusable(false);
@@ -68,8 +67,8 @@ public class ViewClient extends javax.swing.JFrame {
         imageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hu/unideb/inf/images/Earth.png"))); // NOI18N
         imageLabel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        stateTextField.setBackground(new java.awt.Color(255, 102, 102));
         stateTextField.setEditable(false);
+        stateTextField.setBackground(new java.awt.Color(255, 102, 102));
         stateTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         stateTextField.setText("Offline");
 
@@ -84,30 +83,30 @@ public class ViewClient extends javax.swing.JFrame {
 
         fileMenu.setText("File");
 
-        connection.setText("Connection...");
-        connection.addActionListener(new java.awt.event.ActionListener() {
+        connectionMenuItem.setText("Connection...");
+        connectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                connectionActionPerformed(evt);
+                connectionMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(connection);
+        fileMenu.add(connectionMenuItem);
 
-        disconnect.setText("Disconnect");
-        disconnect.setEnabled(false);
-        disconnect.addActionListener(new java.awt.event.ActionListener() {
+        disconnectMenuItem.setText("Disconnect");
+        disconnectMenuItem.setEnabled(false);
+        disconnectMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                disconnectActionPerformed(evt);
+                disconnectMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(disconnect);
+        fileMenu.add(disconnectMenuItem);
 
-        quit.setText("Quit");
-        quit.addActionListener(new java.awt.event.ActionListener() {
+        quitMenuItem.setText("Quit");
+        quitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quitActionPerformed(evt);
+                quitMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(quit);
+        fileMenu.add(quitMenuItem);
 
         jMenuBar1.add(fileMenu);
 
@@ -180,7 +179,7 @@ public class ViewClient extends javax.swing.JFrame {
         String buffer;
         buffer = messageTextField.getText();
         try {
-            c.send(buffer);
+            connection.send(buffer);
         } catch (NullPointerException ex) {
             System.out.println(ex.getMessage());
         }
@@ -195,7 +194,7 @@ public class ViewClient extends javax.swing.JFrame {
         String buffer;
         buffer = messageTextField.getText();
         try {
-            c.send(buffer);
+            connection.send(buffer);
         } catch (NullPointerException ex) {
             System.out.println("No connection!");
         }
@@ -208,47 +207,47 @@ public class ViewClient extends javax.swing.JFrame {
         sd.setVisible(true);
     }//GEN-LAST:event_optionActionPerformed
 
-    private void connectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectionActionPerformed
+    private void connectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectionMenuItemActionPerformed
         ConnectDialog ncd = new ConnectDialog(this, true);
         ncd.setVisible(true);
         if (!ncd.isCanceled()) {
             ip = ncd.getIP();
             port = ncd.getPort();
             name = ncd.getName();
-            c = new Client(ip, port, name, this, messageView);
+            connection = new Connection(ip, port, name, this, messageView);
             if (isConnected) {
-                c.send(name);
-                c.receive();
+                connection.send(name);
+                connection.receive();
                 this.setTitle("Chat - " + name);
                 stateTextField.setText("Online");
                 stateTextField.setBackground(new java.awt.Color(102, 255, 102));
                 messageView.setMessageView("Connected to the server",
                         "../images/Information-icon.png", "Connected");
-                connection.setEnabled(false);
-                disconnect.setEnabled(true);
+                connectionMenuItem.setEnabled(false);
+                disconnectMenuItem.setEnabled(true);
             }
         }
-    }//GEN-LAST:event_connectionActionPerformed
+    }//GEN-LAST:event_connectionMenuItemActionPerformed
 
-    private void disconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectActionPerformed
-        c.close();
+    private void disconnectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectMenuItemActionPerformed
+        connection.close();
         stateTextField.setText("Offline");
         stateTextField.setBackground(new java.awt.Color(255, 102, 102));
-        connection.setEnabled(true);
-        disconnect.setEnabled(false);
-    }//GEN-LAST:event_disconnectActionPerformed
+        connectionMenuItem.setEnabled(true);
+        disconnectMenuItem.setEnabled(false);
+    }//GEN-LAST:event_disconnectMenuItemActionPerformed
 
-    private void quitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitActionPerformed
+    private void quitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitMenuItemActionPerformed
         if (isConnected) {
-            c.close();
+            connection.close();
         }
         System.exit(0);
-    }//GEN-LAST:event_quitActionPerformed
+    }//GEN-LAST:event_quitMenuItemActionPerformed
 
     private void changeRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeRoomButtonActionPerformed
         String roomName = (String) roomNameBox.getSelectedItem();
         if (!roomName.equals(currentRoom)) {
-            c.send("Room*=" + roomName);
+            connection.send("Room*=" + roomName);
             currentRoom = roomName;
         }
     }//GEN-LAST:event_changeRoomButtonActionPerformed
@@ -257,7 +256,7 @@ public class ViewClient extends javax.swing.JFrame {
         this.isConnected = isConnected;
     }
 
-    public void lookAndFeel() {
+    public static void lookAndFeel() {
 
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /*
@@ -267,19 +266,13 @@ public class ViewClient extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ViewClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ViewClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ViewClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ViewClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ClientView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -287,12 +280,12 @@ public class ViewClient extends javax.swing.JFrame {
 
             @Override
             public void run() {
-                new ViewClient().setVisible(true);
+                new ClientView().setVisible(true);
             }
         });
     }
     String currentRoom = "Default Room";
-    Client c;
+    Connection connection;
     MessageView messageView;
     private static String name;
     private static String ip;
@@ -300,8 +293,8 @@ public class ViewClient extends javax.swing.JFrame {
     private boolean isConnected = false;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton changeRoomButton;
-    public javax.swing.JMenuItem connection;
-    public javax.swing.JMenuItem disconnect;
+    public javax.swing.JMenuItem connectionMenuItem;
+    public javax.swing.JMenuItem disconnectMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JLabel imageLabel;
     public javax.swing.JList jList1;
@@ -311,7 +304,7 @@ public class ViewClient extends javax.swing.JFrame {
     public javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField messageTextField;
     private javax.swing.JMenuItem option;
-    private javax.swing.JMenuItem quit;
+    private javax.swing.JMenuItem quitMenuItem;
     public javax.swing.JComboBox roomNameBox;
     private javax.swing.JButton sendButton;
     private javax.swing.JMenu settingsMenu;
