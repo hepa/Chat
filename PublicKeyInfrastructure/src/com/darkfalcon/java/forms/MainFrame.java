@@ -28,6 +28,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import com.darkfalcon.java.keys.AsymmetricKeyUtil;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  *
@@ -370,8 +373,10 @@ public class MainFrame extends javax.swing.JFrame {
         });
     }
     
-    public javax.swing.JTextArea getConsole() {
-        return this.consoleArea;
+     public void appendToConsoleArea(String message) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        consoleArea.append(dateFormat.format(cal.getTime()) + " - " + message + "\n");
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

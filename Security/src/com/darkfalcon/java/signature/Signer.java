@@ -18,5 +18,5 @@ public interface Signer {
 
     public byte[] sign(byte[] dataToSign) throws SignatureException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException;
 
-    public boolean verify(byte[] dataToVerify, byte[] signedData) throws SignatureException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException;
+    public boolean verify(byte[] signedData, byte[] dataToVerify) throws SignatureException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException;
 }

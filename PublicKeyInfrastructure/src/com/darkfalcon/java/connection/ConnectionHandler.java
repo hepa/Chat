@@ -5,11 +5,13 @@
  */
 package com.darkfalcon.java.connection;
 
-import com.darkfalcon.java.entity.server.KeyRegistry;
+import com.darkfalcon.java.forms.MainFrame;
+import com.darkfalcon.java.keys.AsymmetricKeyUtil;
 import com.darkfalcon.java.message.Message;
 import com.darkfalcon.java.message.Opcode;
 import com.darkfalcon.java.services.SecurityService;
 import com.darkfalcon.java.services.ServiceProvider;
+import com.darkfalcon.java.utils.SignProvider;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
@@ -17,13 +19,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.security.KeyPair;
 import java.security.PublicKey;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -36,9 +35,11 @@ public class ConnectionHandler {
     private PrintWriter outputStream;
     private SecurityService service;
     private Socket connection;
+    private MainFrame form;
 
-    public ConnectionHandler(final Socket connection) throws IOException {
+    public ConnectionHandler(final Socket connection, JFrame form) throws IOException {
         this.connection = connection;
+        this.form = (MainFrame) form;
         inputStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         outputStream = new PrintWriter(connection.getOutputStream(), true);
         service = ServiceProvider.getSecurityService();
@@ -60,11 +61,13 @@ public class ConnectionHandler {
                         String buffer = inputStream.readLine();
                         Message<String> request = gson.fromJson(buffer, new TypeToken<Message<String>>() {}.getType());
                         
+                        form.appendToConsoleArea(request.getOpcode().toString());
+                        
                         switch (request.getOpcode()) {
                             case VALIDATE_SYN:
-                                PublicKey publicKey = getPublicKeyOfServer(request.getContent());
+                                PublicKey publicKey = SignProvider.getInstance().getKeyPairOfSigner().getPublic();
                                 System.out.println(publicKey);
-                                String key = new Base64().encodeAsString(publicKey.getEncoded());
+                                String key = new Base64().encodeAsString(AsymmetricKeyUtil.encodePublicKey(publicKey));
                                 Message<String> response = new Message<>();
                                 response.setOpcode(Opcode.VALIDATE_ACK);
                                 response.setContent(key);
@@ -99,10 +102,6 @@ public class ConnectionHandler {
                 String messageText = gson.toJson(message);
                 outputStream.write(messageText + "\n");
                 outputStream.flush();
-            }
-            
-            private PublicKey getPublicKeyOfServer(String serverId) {
-                return service.getKeyRegistryByServerId(serverId).getKeyPair().getPublic();
             }
         }.start();    
     }

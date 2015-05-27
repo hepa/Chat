@@ -1,59 +1,81 @@
 package security;
 
 import com.darkfalcon.java.encryption.Encrypter;
-import java.io.UnsupportedEncodingException;
-import java.security.AlgorithmParameters;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidParameterSpecException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class AESEncrypter
         implements Encrypter {
 
-    private byte[] ivBytes;
-    private SecretKeySpec secretSpec;
-    private Cipher cipher;
+    private SecretKey key;
 
     public AESEncrypter(SecretKey key) {
-        this.secretSpec = new SecretKeySpec(key.getEncoded(), "AES");
-        try {
-            this.cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        this.key = key;
     }
 
     @Override
     public byte[] encrypt(String plain) {
         try {
-            this.cipher.init(1, this.secretSpec);
-            AlgorithmParameters params = this.cipher.getParameters();
-            this.ivBytes = ((IvParameterSpec) params.getParameterSpec(IvParameterSpec.class)).getIV();
-            return this.cipher.doFinal(plain.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidParameterSpecException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            final SecretKeySpec secretKey = new SecretKeySpec(key.getEncoded(), "AES");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            return cipher.doFinal(plain.getBytes());
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            Logger.getLogger(AESEncrypter.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
         }
     }
 
     @Override
     public String decrypt(byte[] secret) {
         try {
-            this.cipher.init(2, this.secretSpec, new IvParameterSpec(
-                    this.ivBytes));
-            return new String(this.cipher.doFinal(secret));
-        } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+            final SecretKeySpec secretKey = new SecretKeySpec(key.getEncoded(), "AES");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return new String(cipher.doFinal(secret));
+        } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException ex) {
+            Logger.getLogger(AESEncrypter.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
+            Logger.getLogger(AESEncrypter.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public byte[] encryptToByte(byte[] plainBytes) {
+        try {
+             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            final SecretKeySpec secretKey = new SecretKeySpec(key.getEncoded(), "AES");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            return cipher.doFinal(plainBytes);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            Logger.getLogger(AESEncrypter.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public byte[] decryptToByte(byte[] secretBytes) {
+        try {
+             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+            final SecretKeySpec secretKey = new SecretKeySpec(key.getEncoded(), "AES");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return cipher.doFinal(secretBytes);
+        } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException ex) {
+            Logger.getLogger(AESEncrypter.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
+            Logger.getLogger(AESEncrypter.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
         }
     }
 }

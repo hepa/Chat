@@ -1,13 +1,14 @@
 package hu.unideb.inf.classes;
 
-
-import hu.unideb.inf.forms.ViewServer;
+import hu.unideb.inf.forms.ServerView;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provides basic Server functions.
@@ -16,28 +17,27 @@ import java.util.ArrayList;
  */
 public class Server {
 
-    ServerSocket host;
-    ViewServer viewServer;
-    Room defaultRoom;
-    ArrayList<Room> Rooms = new ArrayList<>();
+    private ServerSocket server;
+    private ServerView viewServer;
+    private ArrayList<Room> Rooms = new ArrayList<>();
     int userID = 0;
     int port;
     int roomID = 0;
 
-    public Server(ViewServer viewServer) {
+    public Server(ServerView viewServer) {
         this.viewServer = viewServer;
     }
 
     public void listenSocket(int port) {
         this.port = port;
         try {
-            host = new ServerSocket(port);
-            viewServer.infoArea.append("Server is running...\n");
-            System.out.println("Server is running...");
+            server = new ServerSocket(port);
+            viewServer.infoArea.append("Server is running at port: " + port + "\n");
+            Logger.getLogger(Server.class.getName()).log(Level.INFO, "Server is running at port: " + port);
             this.createRoom("Default Room");
-        } catch (IOException e) {
+        } catch (IOException ex) {
             viewServer.infoArea.append("Port is already open!\n");
-            System.out.println("Port is already open!");
+            Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Port = " + port + " is already open!", ex);
         }
 
         new Thread() {
@@ -49,20 +49,20 @@ public class Server {
             public void run() {
                 while (true) {
                     try {
-                        sock = host.accept();
+                        sock = server.accept();
                         in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                         String name = in.readLine();
                         Client client = new Client(sock, userID, name);
-                        
-                        viewServer.infoArea.append(name + " is connected: " 
+
+                        viewServer.infoArea.append(name + " is connected: "
                                 + sock.getInetAddress() + "/ " + sock.getPort() + "\n");
-                        System.out.println(name + " is connected: "
-                                + sock.getInetAddress() + "/ " + sock.getPort());
-                        
+                        Logger.getLogger(Server.class.getName()).log(Level.INFO,
+                                name + " is connected: " + sock.getInetAddress() + "/ " + sock.getPort());
+
                         Rooms.get(0).addClient(client);
-                        userID++;  
+                        userID++;
                     } catch (IOException ex) {
-                        System.out.println(ex.getMessage());
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -73,33 +73,34 @@ public class Server {
         Room room = new Room(roomID, roomName, this, viewServer);
         Rooms.add(room);
         roomID++;
-        
+
         viewServer.infoArea.append("Room created: \t/name: " + room.getRoomName()
                 + " \t/ID: " + room.getRoomID() + "\n");
-        System.out.println("Room created: /name: " + room.getRoomName()
-                + " /ID: " + room.getRoomID());
-        
+        Logger.getLogger(Server.class.getName()).log(Level.INFO,
+                "Room created: /name: " + room.getRoomName() + " /ID: " + room.getRoomID());
+
         showRoomsName();
         sendRoomsName();
     }
-    
+
     public void deleteRoom(Room room) {
         String deletedRoomName = room.getRoomName();
         int deletedRoomID = room.getRoomID();
-        
+
         room.deleteRoom();
         Rooms.remove(room);
-        
+
         viewServer.infoArea.append("Room deleted: \t/name: " + deletedRoomName
                 + " \t/ID: " + deletedRoomID + "\n");
-        System.out.println("Room deleted: \t/name: " + deletedRoomName
+        Logger.getLogger(Server.class.getName()).log(Level.INFO,
+                "Room deleted: \t/name: " + deletedRoomName
                 + " \t/ID: " + deletedRoomID + "\n");
-        
+
         showRoomsName();
         sendRoomsName();
-        
+
     }
-    
+
     public void showRoomsName() {
         int size = Rooms.size();
         final String rooms[] = new String[size];
@@ -119,41 +120,41 @@ public class Server {
             }
         });
     }
-    
+
     public void sendRoomsName(Client client) {
         String rooms = "Rooms*";
-        for (Room r: Rooms) {
+        for (Room r : Rooms) {
             rooms = rooms + ":" + r.getRoomName();
         }
         client.getOut().println(rooms);
         viewServer.infoArea.append("Rooms info sent.\n");
-        System.out.println("Rooms info sent.");
+        Logger.getLogger(Server.class.getName()).log(Level.INFO,
+                "Rooms info sent.\n");
     }
-    
+
     public void sendRoomsName() {
         String rooms = "Rooms*:";
-        for (Room r: Rooms) {
-            rooms = rooms + r.getRoomName() + ":";
+        for (Room room : Rooms) {
+            rooms = rooms + room.getRoomName() + ":";
         }
-        for (Room r: Rooms) {    
-            for (Client c: r.Member) {
-                c.getOut().println(rooms);
+        for (Room room : Rooms) {
+            for (Client client : room.getMember()) {
+                client.getOut().println(rooms);
             }
-        } 
+        }
     }
-    
+
     public void moveClient(Room room, Client client) {
         String oldRoomName = client.getCurrentRoomName();
         room.addClient(client);
         viewServer.infoArea.append(client.getClientName() + " was moved from: "
                 + oldRoomName + " to: " + room.getRoomName() + "\n");
-        System.out.println(client.getClientName() + " was moved from: "
+        Logger.getLogger(Server.class.getName()).log(Level.INFO,
+                client.getClientName() + " was moved from: "
                 + oldRoomName + " to: " + room.getRoomName());
     }
-    
+
     public ArrayList<Room> getRooms() {
         return Rooms;
     }
 }
-
-

@@ -1,19 +1,20 @@
 package hu.unideb.inf.forms;
 
+import com.darkfalcon.java.config.ApplicationConfig;
 import hu.unideb.inf.classes.Room;
 import hu.unideb.inf.classes.Server;
 import java.util.Iterator;
 import javax.swing.JList;
 import javax.swing.ListModel;
 
-public class ViewServer extends javax.swing.JFrame {
+public class ServerView extends javax.swing.JFrame {
 
     private Server server;
 
-    public ViewServer() {
+    public ServerView() {
+        lookAndFeel();
         initComponents();
         server = new Server(this);
-        portTextField.requestFocusInWindow();
     }
 
     @SuppressWarnings("unchecked")
@@ -24,7 +25,6 @@ public class ViewServer extends javax.swing.JFrame {
         deleteMenuItem = new javax.swing.JMenuItem();
         moveUpMenuItem = new javax.swing.JMenuItem();
         moveDownMenuItem = new javax.swing.JMenuItem();
-        portTextField = new javax.swing.JTextField();
         startButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         roomList = new javax.swing.JList();
@@ -64,8 +64,6 @@ public class ViewServer extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(550, 350));
-
-        portTextField.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
 
         startButton.setText("Start");
         startButton.addActionListener(new java.awt.event.ActionListener() {
@@ -124,20 +122,19 @@ public class ViewServer extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(logLabel)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(portTextField)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(roomLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
+                                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -150,17 +147,13 @@ public class ViewServer extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(addButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deleteButton))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
+                        .addComponent(addButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(portTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(startButton)))
-                    .addComponent(jScrollPane1))
+                        .addComponent(deleteButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 185, Short.MAX_VALUE)
+                        .addComponent(startButton))
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
 
@@ -168,22 +161,16 @@ public class ViewServer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        String inPort;
-        inPort = portTextField.getText();
-        int port = 0;
-        try {
-            port = Integer.parseInt(inPort);
-        } catch (NumberFormatException ex) {
-            System.out.println(ex.getMessage());
-        }
-        if (port > 0 && port < 65336) {
-            server.listenSocket(port);
-            addButton.setEnabled(true);
-            deleteButton.setEnabled(true);
-            deleteMenuItem.setEnabled(true);
-            moveUpMenuItem.setEnabled(true);
-            moveDownMenuItem.setEnabled(true);
-        }
+        String confPort = ApplicationConfig.getConfig().getProperty("", "4301");
+        int port = Integer.parseInt(confPort);
+
+        server.listenSocket(port);
+        addButton.setEnabled(true);
+        deleteButton.setEnabled(true);
+        deleteMenuItem.setEnabled(true);
+        moveUpMenuItem.setEnabled(true);
+        moveDownMenuItem.setEnabled(true);
+
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
@@ -277,7 +264,20 @@ public class ViewServer extends javax.swing.JFrame {
         System.out.println("MoveDown: " + roomList.getSelectedIndex());
     }//GEN-LAST:event_moveDownMenuItemActionPerformed
 
-    
+    private static void lookAndFeel() {
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Windows".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ServerView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu PopupMenu;
     private javax.swing.JButton addButton;
@@ -289,7 +289,6 @@ public class ViewServer extends javax.swing.JFrame {
     private javax.swing.JLabel logLabel;
     private javax.swing.JMenuItem moveDownMenuItem;
     private javax.swing.JMenuItem moveUpMenuItem;
-    private javax.swing.JTextField portTextField;
     private javax.swing.JLabel roomLabel;
     public javax.swing.JList roomList;
     private javax.swing.JButton startButton;

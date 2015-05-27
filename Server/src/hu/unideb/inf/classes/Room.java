@@ -2,7 +2,7 @@ package hu.unideb.inf.classes;
 
 
 import hu.unideb.inf.forms.RoomLogger;
-import hu.unideb.inf.forms.ViewServer;
+import hu.unideb.inf.forms.ServerView;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,12 +14,12 @@ public class Room {
     private int roomID;
     private String roomName;
     private Boolean isDeleted = false;
-    ArrayList<Client> Member = new ArrayList<>();
-    RoomLogger roomLogger;
-    Server server;
-    ViewServer viewServer;
+    private ArrayList<Client> Member = new ArrayList<>();
+    private RoomLogger roomLogger;
+    private Server server;
+    private ServerView viewServer;
 
-    public Room(int roomID, String roomName, Server server, ViewServer viewServer) {
+    public Room(int roomID, String roomName, Server server, ServerView viewServer) {
         this.roomID = roomID;
         this.roomName = roomName;
         this.server = server;
@@ -72,7 +72,7 @@ public class Room {
     }
 
     public void deleteRoom() {
-        for (Room r : server.Rooms) {
+        for (Room r : server.getRooms()) {
             if (r.roomID == 0) {
                 for (Client c : Member) {
                     server.moveClient(r, c);
@@ -94,7 +94,7 @@ public class Room {
         public boolean changeRoom(String buffer, Client client) {
             String check[] = buffer.split("=");
             if (check[0].equals("Room*")) {
-                for (Room r : server.Rooms) {
+                for (Room r : server.getRooms()) {
                     if (r.roomName.equals(check[1])) {
                         Member.remove(client);
                         server.moveClient(r, client);
@@ -179,5 +179,8 @@ public class Room {
     
     public void roomLoggerVisible(boolean bool) {
         roomLogger.setVisible(bool);
+    }
+    public ArrayList<Client> getMember() {
+        return this.Member;
     }
 }

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.darkfalcon.java.utils;
+package com.darkfalcon.java.file.util;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -14,3 +14,14 @@
 /PublicKeyInfrastructure/build/
 /chat-common-api/nbproject/private/
 /chat-common-api/build/
+/chat-security/nbproject/private/
+/chat-security/build/
+/chat-server-security/nbproject/private/
+/chat-server-security/build/
+/chat-client-security/build/
+/chat-file-api/nbproject/private/
+/chat-file-api/build/
+/chat-file-api/dist/
+/Security/dist/
+/chat-common-api/dist/
+/chat-server-security/dist/

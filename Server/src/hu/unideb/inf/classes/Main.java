@@ -1,14 +1,16 @@
 package hu.unideb.inf.classes;
 
-import com.darkfalcon.java.services.UserService;
-import com.darkfalcon.java.services.UserServiceImpl;
-import com.darkfalcon.java.vo.user.UserVO;
+import hu.unideb.inf.forms.ServerView;
 
 
 public class Main {
     public static void main(String[] args) {
-        UserService userService = new UserServiceImpl();
-        UserVO user = userService.getUserByName("darkfalcon");
-        System.out.println(user.getUsername() + " - " + user.getPassword());
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                new ServerView().setVisible(true);
+            }
+        });
     }
 }

@@ -8,10 +8,9 @@ package com.darkfalcon.java.security;
 
 import com.darkfalcon.java.encryption.Encrypter;
 import com.darkfalcon.java.encryption.impl.RSAEncrypter;
+import com.darkfalcon.java.file.util.FileOperationUtil;
 import com.darkfalcon.java.file.util.SecurityFileImporter;
 import com.darkfalcon.java.keys.AsymmetricKeyUtil;
-import com.darkfalcon.java.signature.Signer;
-import com.darkfalcon.java.utils.FileOperationUtil;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -20,8 +19,6 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.SecretKey;
-
 /**
  *
  * @author Darkfalcon
